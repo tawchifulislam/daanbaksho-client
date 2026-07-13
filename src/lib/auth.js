@@ -21,6 +21,7 @@ export const auth = betterAuth({
   },
 
   user: {
+    modelName: 'users',
     additionalFields: {
       role: {
         type: 'string',
@@ -43,7 +44,7 @@ export const auth = betterAuth({
         after: async user => {
           const startingCredits = user.role === 'creator' ? 20 : 50;
           await db
-            .collection('user')
+            .collection('users')
             .updateOne(
               { _id: user.id },
               { $set: { credits: startingCredits } },
