@@ -1,6 +1,7 @@
 import './globals.css';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import Providers from '@/components/Providers';
+import Navbar from '@/components/layout/Navbar';
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -18,7 +19,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={jakarta.variable}>
       <body className="font-sans antialiased">
-        <Providers>{children}</Providers>
+        <Providers>
+          <Navbar />
+          {children}
+        </Providers>
       </body>
     </html>
   );
