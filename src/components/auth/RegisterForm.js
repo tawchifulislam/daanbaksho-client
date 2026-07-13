@@ -37,13 +37,14 @@ export default function RegisterForm() {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(registerSchema),
     defaultValues: { role: 'supporter' },
   });
 
-  const [role, setRole] = useState('supporter');
+  const role = watch('role');
 
   const onSubmit = async values => {
     if (!imageFile) {
@@ -71,7 +72,9 @@ export default function RegisterForm() {
         return;
       }
 
-      const { data: tokenData } = await authClient.token();
+      // Fetch our custom access token (JWT) via the /api/token route
+      const tokenRes = await fetch('/api/token');
+      const tokenData = await tokenRes.json();
       if (tokenData?.token) {
         localStorage.setItem('access-token', tokenData.token);
       }
