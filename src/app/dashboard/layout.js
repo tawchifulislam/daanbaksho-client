@@ -3,14 +3,14 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUserRole } from '@/hooks/useUserRole';
+import DashboardSidebar from '@/components/layout/DashboardSidebar';
+import DashboardTopbar from '@/components/layout/DashboardTopbar';
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
   const { session, isLoading } = useUserRole();
 
   useEffect(() => {
-    // Wait until the session check is fully resolved before deciding.
-    // This is what prevents "reload -> bounced to login" false redirects.
     if (!isLoading && !session?.user) {
       router.replace('/login');
     }
@@ -25,14 +25,16 @@ export default function DashboardLayout({ children }) {
   }
 
   if (!session?.user) {
-    // Briefly renders nothing while the redirect above kicks in
     return null;
   }
 
   return (
     <div className="min-h-screen flex">
-      {/* Sidebar and Topbar will be added */}
-      <main className="flex-1 p-6">{children}</main>
+      <DashboardSidebar />
+      <div className="flex-1 flex flex-col">
+        <DashboardTopbar />
+        <main className="flex-1 p-6 bg-muted/20">{children}</main>
+      </div>
     </div>
   );
 }
