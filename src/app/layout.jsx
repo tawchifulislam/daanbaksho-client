@@ -11,7 +11,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata = {
-  title: 'DaanBaksho — Crowdfunding Platform',
+  title: 'DaanBaksho - Crowdfunding Platform',
   description: 'Fund the causes and creators you believe in.',
 };
 

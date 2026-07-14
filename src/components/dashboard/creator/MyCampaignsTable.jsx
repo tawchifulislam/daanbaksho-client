@@ -137,10 +137,8 @@ export default function MyCampaignsTable() {
                   </Button>
 
                   <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="destructive" size="sm">
-                        Delete
-                      </Button>
+                    <AlertDialogTrigger className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-destructive text-white h-8 px-3 hover:bg-destructive/90 transition-colors">
+                      Delete
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>

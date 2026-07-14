@@ -3,79 +3,11 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useUserRole } from '@/hooks/useUserRole';
-import {
-  Home,
-  Search,
-  Wallet,
-  CreditCard,
-  History,
-  PlusCircle,
-  Layers,
-  Users,
-  ClipboardList,
-  Flag,
-} from 'lucide-react';
-
-const navByRole = {
-  supporter: [
-    { href: '/dashboard/supporter-home', label: 'Home', icon: Home },
-    {
-      href: '/dashboard/explore-campaigns',
-      label: 'Explore Campaigns',
-      icon: Search,
-    },
-    {
-      href: '/dashboard/my-contributions',
-      label: 'My Contributions',
-      icon: Wallet,
-    },
-    {
-      href: '/dashboard/purchase-credit',
-      label: 'Purchase Credit',
-      icon: CreditCard,
-    },
-    {
-      href: '/dashboard/payment-history',
-      label: 'Payment History',
-      icon: History,
-    },
-  ],
-  creator: [
-    { href: '/dashboard/creator-home', label: 'Home', icon: Home },
-    {
-      href: '/dashboard/add-campaign',
-      label: 'Add New Campaign',
-      icon: PlusCircle,
-    },
-    { href: '/dashboard/my-campaigns', label: 'My Campaigns', icon: Layers },
-    { href: '/dashboard/withdrawals', label: 'Withdrawals', icon: Wallet },
-    {
-      href: '/dashboard/payment-history',
-      label: 'Payment History',
-      icon: History,
-    },
-  ],
-  admin: [
-    { href: '/dashboard/admin-home', label: 'Home', icon: Home },
-    { href: '/dashboard/manage-users', label: 'Manage Users', icon: Users },
-    {
-      href: '/dashboard/manage-campaigns',
-      label: 'Manage Campaigns',
-      icon: Layers,
-    },
-    {
-      href: '/dashboard/withdrawal-requests',
-      label: 'Withdrawal Requests',
-      icon: ClipboardList,
-    },
-    { href: '/dashboard/reports', label: 'Reports', icon: Flag },
-  ],
-};
+import { navByRole } from '@/lib/dashboardNav';
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
   const { role } = useUserRole();
-
   const links = navByRole[role] || [];
 
   return (
@@ -85,7 +17,6 @@ export default function DashboardSidebar() {
           DaanBaksho
         </Link>
       </div>
-
       <nav className="flex-1 px-3 py-4 space-y-1">
         {links.map(link => {
           const isActive = pathname === link.href;

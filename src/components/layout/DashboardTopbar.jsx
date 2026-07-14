@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Bell } from 'lucide-react';
 import Image from 'next/image';
 import { useUserRole } from '@/hooks/useUserRole';
+import MobileSidebar from './MobileSidebar';
 
 export default function DashboardTopbar() {
   const { session, role, credits } = useUserRole();
@@ -11,10 +12,15 @@ export default function DashboardTopbar() {
 
   return (
     <header className="h-16 border-b bg-background flex items-center justify-between px-4 md:px-6 relative">
-      <div className="md:hidden font-bold">DaanBaksho</div>
+      <div className="flex items-center gap-2">
+        <MobileSidebar />
+        <span className="md:hidden font-bold">DaanBaksho</span>
+      </div>
 
-      <div className="flex items-center gap-4 ml-auto">
-        <span className="text-sm font-medium">{credits} Credits</span>
+      <div className="flex items-center gap-3 md:gap-4 ml-auto">
+        <span className="text-sm font-medium hidden sm:inline">
+          {credits} Credits
+        </span>
 
         <button
           onClick={() => setShowNotifications(prev => !prev)}
@@ -43,14 +49,13 @@ export default function DashboardTopbar() {
         </div>
       </div>
 
-      {/* Notification popup placeholder — wired to real data in Phase 10 */}
       {showNotifications && (
         <div
-          className="absolute right-4 top-16 w-80 rounded-lg border bg-background shadow-lg p-4 z-50"
+          className="absolute right-4 top-16 w-72 sm:w-80 rounded-lg border bg-background shadow-lg p-4 z-50"
           onClick={e => e.stopPropagation()}
         >
           <p className="text-sm text-muted-foreground">
-            No notifications yet — this will be wired up in a later phase.
+            No notifications yet - this will be wired up in a later phase.
           </p>
         </div>
       )}
