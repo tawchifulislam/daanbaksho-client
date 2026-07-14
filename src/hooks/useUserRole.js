@@ -11,6 +11,7 @@ export function useUserRole() {
   const { data: userInfo, isLoading: userInfoLoading } = useQuery({
     queryKey: ['user-info', email],
     enabled: !!email,
+    retry: false,
     queryFn: async () => {
       const res = await axiosSecure.get(`/users/${email}`);
       return res.data;

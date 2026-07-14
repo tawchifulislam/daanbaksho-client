@@ -16,12 +16,22 @@ axiosSecure.interceptors.request.use(config => {
 axiosSecure.interceptors.response.use(
   response => response,
   error => {
-    if (error?.response?.status === 401 || error?.response?.status === 403) {
+    const status = error?.response?.status;
+
+    if (status === 401 || status === 403) {
       localStorage.removeItem('access-token');
-      if (typeof window !== 'undefined') {
+
+      const isAuthPage =
+        typeof window !== 'undefined' &&
+        ['/login', '/register'].includes(window.location.pathname);
+
+      // Only redirect if we're not already on an auth page —
+      // this is what breaks the infinite reload loop.
+      if (!isAuthPage) {
         window.location.href = '/login';
       }
     }
+
     return Promise.reject(error);
   },
 );
