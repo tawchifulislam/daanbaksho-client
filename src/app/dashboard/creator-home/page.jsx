@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useUserRole } from '@/hooks/useUserRole';
 import { axiosSecure } from '@/lib/axios-secure';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import ContributionsToReview from '@/components/dashboard/creator/ContributionsToReview';
 
 export default function CreatorHomePage() {
   const { session, credits } = useUserRole();
@@ -58,6 +59,11 @@ export default function CreatorHomePage() {
             <p className="text-3xl font-bold">{stats?.totalRaised ?? 0}</p>
           </CardContent>
         </Card>
+      </div>
+
+      <div>
+        <h2 className="text-lg font-semibold mb-3">Contributions To Review</h2>
+        <ContributionsToReview />
       </div>
     </div>
   );

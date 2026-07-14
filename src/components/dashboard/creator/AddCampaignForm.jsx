@@ -47,6 +47,7 @@ export default function AddCampaignForm() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(campaignSchema),
+    defaultValues: { category: '' },
   });
 
   const category = watch('category');
