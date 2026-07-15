@@ -5,10 +5,12 @@ import { Bell } from 'lucide-react';
 import Image from 'next/image';
 import { useUserRole } from '@/hooks/useUserRole';
 import MobileSidebar from './MobileSidebar';
+import NotificationPopup from './NotificationPopup';
 
 export default function DashboardTopbar() {
   const { session, role, credits } = useUserRole();
   const [showNotifications, setShowNotifications] = useState(false);
+  const email = session?.user?.email;
 
   return (
     <header className="h-16 border-b bg-background flex items-center justify-between px-4 md:px-6 relative">
@@ -49,16 +51,11 @@ export default function DashboardTopbar() {
         </div>
       </div>
 
-      {showNotifications && (
-        <div
-          className="absolute right-4 top-16 w-72 sm:w-80 rounded-lg border bg-background shadow-lg p-4 z-50"
-          onClick={e => e.stopPropagation()}
-        >
-          <p className="text-sm text-muted-foreground">
-            No notifications yet - this will be wired up in a later phase.
-          </p>
-        </div>
-      )}
+      <NotificationPopup
+        email={email}
+        open={showNotifications}
+        onClose={() => setShowNotifications(false)}
+      />
     </header>
   );
 }
