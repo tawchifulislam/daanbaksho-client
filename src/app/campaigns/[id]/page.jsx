@@ -4,8 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import axios from 'axios';
-
 import ContributeForm from '@/components/campaigns/ContributeForm';
+import ReportCampaignDialog from '@/components/campaigns/ReportCampaignDialog';
 import { Badge } from '@/components/ui/badge';
 
 export default function CampaignDetailsPage() {
@@ -84,6 +84,9 @@ export default function CampaignDetailsPage() {
           <p className="text-sm text-muted-foreground mt-4">
             Deadline: {new Date(campaign.deadline).toLocaleDateString()}
           </p>
+          <div className="mt-6">
+            <ReportCampaignDialog campaign={campaign} />
+          </div>
         </div>
       </div>
 
