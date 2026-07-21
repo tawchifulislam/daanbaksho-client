@@ -3,6 +3,7 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 import Image from 'next/image';
+import Container from '@/components/layout/Container';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -33,8 +34,8 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <section className="bg-muted/40 py-16">
-      <div className="max-w-4xl mx-auto px-4">
+    <section className="py-16">
+      <Container className="max-w-4xl">
         <h2 className="text-2xl md:text-3xl font-bold mb-10 text-center">
           What Our Community Says
         </h2>
@@ -65,7 +66,7 @@ export default function Testimonials() {
             </SwiperSlide>
           ))}
         </Swiper>
-      </div>
+      </Container>
     </section>
   );
 }

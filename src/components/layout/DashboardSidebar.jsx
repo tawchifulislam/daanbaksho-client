@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useUserRole } from '@/hooks/useUserRole';
 import { navByRole } from '@/lib/dashboardNav';
+import Logo from './Logo';
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
@@ -13,9 +14,7 @@ export default function DashboardSidebar() {
   return (
     <aside className="w-64 shrink-0 border-r bg-background hidden md:flex md:flex-col">
       <div className="h-16 flex items-center px-6 border-b">
-        <Link href="/" className="text-lg font-bold">
-          DaanBaksho
-        </Link>
+        <Logo size="sm" />
       </div>
       <nav className="flex-1 px-3 py-4 space-y-1">
         {links.map(link => {

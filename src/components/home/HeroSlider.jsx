@@ -56,7 +56,12 @@ export default function HeroSlider() {
                 {slide.subtitle}
               </p>
               <Link href="/campaigns">
-                <Button size="lg">Explore Campaigns</Button>
+                <Button
+                  size="lg"
+                  className="bg-accent-brand hover:bg-accent-brand/90 text-accent-brand-foreground"
+                >
+                  Explore Campaigns
+                </Button>
               </Link>
             </motion.div>
           </div>

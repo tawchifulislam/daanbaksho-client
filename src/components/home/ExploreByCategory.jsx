@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Cpu, Palette, Users, HeartPulse, BookOpen, Leaf } from 'lucide-react';
+import Container from '@/components/layout/Container';
 
 const categories = [
   { icon: Cpu, label: 'Technology' },
@@ -15,7 +16,7 @@ const categories = [
 export default function ExploreByCategory() {
   return (
     <section className="bg-muted/40 py-16">
-      <div className="max-w-7xl mx-auto px-4">
+      <Container>
         <h2 className="text-2xl md:text-3xl font-bold mb-10 text-center">
           Explore by Category
         </h2>
@@ -34,7 +35,7 @@ export default function ExploreByCategory() {
             </motion.div>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

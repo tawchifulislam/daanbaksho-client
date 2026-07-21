@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import { Menu } from 'lucide-react';
 import { useUserRole } from '@/hooks/useUserRole';
 import { navByRole } from '@/lib/dashboardNav';
-import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
@@ -14,6 +13,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import Logo from './Logo';
 
 export default function MobileSidebar() {
   const [open, setOpen] = useState(false);
@@ -28,8 +28,8 @@ export default function MobileSidebar() {
       </SheetTrigger>
       <SheetContent side="left" className="w-64 p-0">
         <SheetHeader className="h-16 flex items-center justify-start px-6 border-b">
-          <SheetTitle className="text-lg font-bold text-left">
-            DaanBaksho
+          <SheetTitle>
+            <Logo withLink={false} size="sm" />
           </SheetTitle>
         </SheetHeader>
         <nav className="flex-1 px-3 py-4 space-y-1">

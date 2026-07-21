@@ -1,13 +1,12 @@
-import Link from 'next/link';
-import { LogoLinkedin, LogoFacebook, LogoGithub } from '@gravity-ui/icons';
+import Logo from './Logo';
+import Container from './Container';
+import { LogoFacebook, LogoGithub, LogoLinkedin } from '@gravity-ui/icons';
 
 export default function Footer() {
   return (
     <footer className="border-t bg-background mt-16">
-      <div className="max-w-7xl mx-auto px-4 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
-        <Link href="/" className="text-xl font-bold">
-          DaanBaksho
-        </Link>
+      <Container className="py-10 flex flex-col md:flex-row items-center justify-between gap-6">
+        <Logo />
 
         <p className="text-sm text-muted-foreground text-center">
           Empowering creators and causes through community-driven crowdfunding.
@@ -15,7 +14,7 @@ export default function Footer() {
 
         <div className="flex items-center gap-4">
           <a
-            href="https://linkedin.com/in/YOUR_USERNAME"
+            href="https://linkedin.com"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
@@ -24,7 +23,7 @@ export default function Footer() {
           </a>
 
           <a
-            href="https://facebook.com/YOUR_USERNAME"
+            href="https://facebook.com"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
@@ -33,7 +32,7 @@ export default function Footer() {
           </a>
 
           <a
-            href="https://github.com/YOUR_USERNAME"
+            href="https://github.com"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
@@ -41,7 +40,7 @@ export default function Footer() {
             <LogoGithub className="w-5 h-5 hover:text-primary transition-colors" />
           </a>
         </div>
-      </div>
+      </Container>
     </footer>
   );
 }
