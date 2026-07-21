@@ -2,17 +2,12 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { Trash2 } from 'lucide-react';
 
 import { axiosSecure } from '@/lib/axios-secure';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Select,
   SelectContent,
@@ -31,6 +26,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+
+const roleAccent = {
+  admin: 'bg-accent-brand/10 text-accent-brand',
+  creator: 'bg-primary/10 text-primary',
+  supporter: 'bg-muted text-muted-foreground',
+};
 
 export default function ManageUsersTable() {
   const queryClient = useQueryClient();
@@ -66,73 +67,69 @@ export default function ManageUsersTable() {
     return <p className="text-muted-foreground">Loading users...</p>;
 
   return (
-    <div className="rounded-lg border overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Role</TableHead>
-            <TableHead>Credits</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {users.map(user => (
-            <TableRow key={user._id}>
-              <TableCell className="font-medium">{user.name}</TableCell>
-              <TableCell>{user.email}</TableCell>
-              <TableCell>
-                <Badge variant="outline" className="capitalize">
-                  {user.role}
-                </Badge>
-              </TableCell>
-              <TableCell>{user.credits}</TableCell>
-              <TableCell className="text-right space-x-2">
-                <Select
-                  value={user.role}
-                  onValueChange={role => {
-                    if (role === user.role) return;
-                    roleMutation.mutate({ id: user._id, role });
-                  }}
-                >
-                  <SelectTrigger className="w-32 inline-flex">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="supporter">Supporter</SelectItem>
-                    <SelectItem value="creator">Creator</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
-                  </SelectContent>
-                </Select>
+    <div className="space-y-3">
+      {users.map(user => (
+        <Card key={user._id} className="border-none shadow-sm">
+          <CardContent className="p-4 flex items-center gap-4 flex-wrap">
+            <Avatar className="w-10 h-10 border shrink-0">
+              <AvatarFallback className={roleAccent[user.role]}>
+                {user.name?.charAt(0)?.toUpperCase() || 'U'}
+              </AvatarFallback>
+            </Avatar>
 
-                <AlertDialog>
-                  <AlertDialogTrigger className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-destructive text-white h-8 px-3 hover:bg-destructive/90 transition-colors">
+            <div className="flex-1 min-w-0">
+              <p className="font-medium truncate">{user.name}</p>
+              <p className="text-sm text-muted-foreground truncate">
+                {user.email}
+              </p>
+            </div>
+
+            <Badge variant="outline" className="capitalize shrink-0">
+              {user.credits} credits
+            </Badge>
+
+            <Select
+              value={user.role}
+              onValueChange={role => {
+                if (role === user.role) return;
+                roleMutation.mutate({ id: user._id, role });
+              }}
+            >
+              <SelectTrigger className="w-32 shrink-0">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="supporter">Supporter</SelectItem>
+                <SelectItem value="creator">Creator</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <AlertDialog>
+              <AlertDialogTrigger className="inline-flex items-center justify-center rounded-md h-9 w-9 bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors shrink-0">
+                <Trash2 className="w-4 h-4" />
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Remove {user.name}?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete this user from the platform.
+                    This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => removeMutation.mutate(user._id)}
+                  >
                     Remove
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Remove {user.name}?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This will permanently delete this user from the
-                        platform. This action cannot be undone.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => removeMutation.mutate(user._id)}
-                      >
-                        Remove
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 }
