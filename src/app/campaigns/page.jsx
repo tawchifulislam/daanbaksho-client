@@ -1,9 +1,10 @@
 import ExploreCampaignsGrid from '@/components/campaigns/ExploreCampaignsGrid';
+import Container from '@/components/layout/Container';
 
 export default function PublicCampaignsPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10">
+    <Container className="py-10">
       <ExploreCampaignsGrid />
-    </div>
+    </Container>
   );
 }
