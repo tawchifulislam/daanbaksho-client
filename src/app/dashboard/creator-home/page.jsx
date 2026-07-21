@@ -1,9 +1,10 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { Layers, TrendingUp, Coins } from 'lucide-react';
 import { useUserRole } from '@/hooks/useUserRole';
 import { axiosSecure } from '@/lib/axios-secure';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import StatCard from '@/components/dashboard/StatCard';
 import ContributionsToReview from '@/components/dashboard/creator/ContributionsToReview';
 
 export default function CreatorHomePage() {
@@ -29,36 +30,24 @@ export default function CreatorHomePage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">
-              Total Campaigns
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{stats?.totalCampaigns ?? 0}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">
-              Active Campaigns
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{stats?.activeCampaigns ?? 0}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">
-              Total Raised
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{stats?.totalRaised ?? 0}</p>
-          </CardContent>
-        </Card>
+        <StatCard
+          icon={Layers}
+          label="Total Campaigns"
+          value={stats?.totalCampaigns ?? 0}
+          accent="primary"
+        />
+        <StatCard
+          icon={TrendingUp}
+          label="Active Campaigns"
+          value={stats?.activeCampaigns ?? 0}
+          accent="brand"
+        />
+        <StatCard
+          icon={Coins}
+          label="Total Raised"
+          value={stats?.totalRaised ?? 0}
+          accent="primary"
+        />
       </div>
 
       <div>

@@ -3,19 +3,14 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { Eye, Check, X } from 'lucide-react';
 
 import { axiosSecure } from '@/lib/axios-secure';
 import { useUserRole } from '@/hooks/useUserRole';
 
 import { Button } from '@/components/ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   Dialog,
   DialogContent,
@@ -66,66 +61,62 @@ export default function ContributionsToReview() {
   if (isLoading)
     return <p className="text-muted-foreground">Loading contributions...</p>;
 
+  if (contributions.length === 0) {
+    return (
+      <Card className="border-none shadow-sm">
+        <CardContent className="p-10 text-center text-muted-foreground">
+          No contributions pending review.
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <div className="space-y-4">
-      <div className="rounded-lg border overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Supporter</TableHead>
-              <TableHead>Campaign</TableHead>
-              <TableHead>Amount</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {contributions.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={4}
-                  className="text-center text-muted-foreground"
-                >
-                  No contributions pending review.
-                </TableCell>
-              </TableRow>
-            ) : (
-              contributions.map(c => (
-                <TableRow key={c._id}>
-                  <TableCell className="font-medium">
-                    {c.supporter_name}
-                  </TableCell>
-                  <TableCell>{c.campaign_title}</TableCell>
-                  <TableCell>{c.contribution_amount}</TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setViewing(c)}
-                    >
-                      View
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => approveMutation.mutate(c._id)}
-                      disabled={approveMutation.isPending}
-                    >
-                      Approve
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="destructive"
-                      onClick={() => rejectMutation.mutate(c._id)}
-                      disabled={rejectMutation.isPending}
-                    >
-                      Reject
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+    <div className="space-y-3">
+      {contributions.map(c => (
+        <Card key={c._id} className="border-none shadow-sm">
+          <CardContent className="p-4 flex items-center gap-4 flex-wrap">
+            <Avatar className="w-10 h-10 border shrink-0">
+              <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                {c.supporter_name?.charAt(0)?.toUpperCase() || 'S'}
+              </AvatarFallback>
+            </Avatar>
+
+            <div className="flex-1 min-w-0">
+              <p className="font-medium truncate">{c.supporter_name}</p>
+              <p className="text-sm text-muted-foreground truncate">
+                {c.campaign_title} ·{' '}
+                <span className="font-medium text-primary">
+                  {c.contribution_amount} credits
+                </span>
+              </p>
+            </div>
+
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => setViewing(c)}>
+                <Eye className="w-3.5 h-3.5" />
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => approveMutation.mutate(c._id)}
+                disabled={approveMutation.isPending}
+              >
+                <Check className="w-3.5 h-3.5 mr-1" />
+                Approve
+              </Button>
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={() => rejectMutation.mutate(c._id)}
+                disabled={rejectMutation.isPending}
+              >
+                <X className="w-3.5 h-3.5 mr-1" />
+                Reject
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
 
       <Dialog open={!!viewing} onOpenChange={open => !open && setViewing(null)}>
         <DialogContent>

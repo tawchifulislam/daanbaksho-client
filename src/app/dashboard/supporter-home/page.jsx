@@ -1,10 +1,11 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { HandCoins, Clock, Wallet } from 'lucide-react';
 import { useUserRole } from '@/hooks/useUserRole';
 import { axiosSecure } from '@/lib/axios-secure';
+import StatCard from '@/components/dashboard/StatCard';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -14,6 +15,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function SupporterHomePage() {
   const { session, credits } = useUserRole();
@@ -49,45 +51,31 @@ export default function SupporterHomePage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">
-              Total Contributions
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">
-              {stats?.totalContributions ?? 0}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">
-              Pending Contributions
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">
-              {stats?.pendingContributions ?? 0}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">
-              Total Contributed
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{stats?.totalContributed ?? 0}</p>
-          </CardContent>
-        </Card>
+        <StatCard
+          icon={HandCoins}
+          label="Total Contributions"
+          value={stats?.totalContributions ?? 0}
+          accent="primary"
+        />
+        <StatCard
+          icon={Clock}
+          label="Pending Contributions"
+          value={stats?.pendingContributions ?? 0}
+          accent="brand"
+        />
+        <StatCard
+          icon={Wallet}
+          label="Total Contributed"
+          value={stats?.totalContributed ?? 0}
+          accent="primary"
+        />
       </div>
 
-      <div>
-        <h2 className="text-lg font-semibold mb-3">Approved Contributions</h2>
-        <div className="rounded-lg border overflow-x-auto">
+      <Card className="border-none shadow-sm">
+        <CardContent className="p-0">
+          <div className="p-5 pb-0">
+            <h2 className="text-lg font-semibold">Approved Contributions</h2>
+          </div>
           <Table>
             <TableHeader>
               <TableRow>
@@ -123,8 +111,8 @@ export default function SupporterHomePage() {
               )}
             </TableBody>
           </Table>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

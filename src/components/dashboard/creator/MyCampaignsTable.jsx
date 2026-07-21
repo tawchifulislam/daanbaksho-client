@@ -3,19 +3,15 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import Image from 'next/image';
+import { Pencil, Trash2 } from 'lucide-react';
 
 import { axiosSecure } from '@/lib/axios-secure';
 import { useUserRole } from '@/hooks/useUserRole';
 
 import { Button } from '@/components/ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
@@ -37,6 +33,13 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+
+const statusVariant = {
+  pending: 'secondary',
+  approved: 'default',
+  rejected: 'destructive',
+  suspended: 'destructive',
+};
 
 export default function MyCampaignsTable() {
   const { session } = useUserRole();
@@ -60,9 +63,8 @@ export default function MyCampaignsTable() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, values }) => {
-      return axiosSecure.patch(`/campaigns/${id}`, values);
-    },
+    mutationFn: async ({ id, values }) =>
+      axiosSecure.patch(`/campaigns/${id}`, values),
     onSuccess: () => {
       toast.success('Campaign updated');
       queryClient.invalidateQueries({ queryKey: ['my-campaigns', email] });
@@ -92,52 +94,90 @@ export default function MyCampaignsTable() {
   if (isLoading)
     return <p className="text-muted-foreground">Loading your campaigns...</p>;
 
+  if (campaigns.length === 0) {
+    return (
+      <Card className="border-none shadow-sm">
+        <CardContent className="p-10 text-center text-muted-foreground">
+          You haven&apos;t launched any campaigns yet.
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <div className="rounded-lg border overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Raised</TableHead>
-            <TableHead>Deadline</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {campaigns.length === 0 ? (
-            <TableRow>
-              <TableCell
-                colSpan={6}
-                className="text-center text-muted-foreground"
-              >
-                You haven&apos;t launched any campaigns yet.
-              </TableCell>
-            </TableRow>
-          ) : (
-            campaigns.map(campaign => (
-              <TableRow key={campaign._id}>
-                <TableCell className="font-medium">{campaign.title}</TableCell>
-                <TableCell>{campaign.category}</TableCell>
-                <TableCell className="capitalize">{campaign.status}</TableCell>
-                <TableCell>
-                  {campaign.raised_amount} / {campaign.funding_goal}
-                </TableCell>
-                <TableCell>
-                  {new Date(campaign.deadline).toLocaleDateString()}
-                </TableCell>
-                <TableCell className="text-right space-x-2">
+    <div className="space-y-4">
+      {campaigns.map(campaign => {
+        const progress = Math.min(
+          100,
+          Math.round((campaign.raised_amount / campaign.funding_goal) * 100),
+        );
+
+        return (
+          <Card
+            key={campaign._id}
+            className="border-none shadow-sm overflow-hidden"
+          >
+            <CardContent className="p-4 flex flex-col sm:flex-row gap-4">
+              <div className="relative w-full sm:w-40 h-32 sm:h-auto rounded-lg overflow-hidden shrink-0">
+                <Image
+                  src={campaign.image_url}
+                  alt={campaign.title}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+
+              <div className="flex-1 min-w-0 space-y-2">
+                <div className="flex items-start justify-between gap-3 flex-wrap">
+                  <div>
+                    <h3 className="font-semibold truncate">{campaign.title}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {campaign.category}
+                    </p>
+                  </div>
+                  <Badge
+                    variant={statusVariant[campaign.status] || 'outline'}
+                    className="capitalize"
+                  >
+                    {campaign.status}
+                  </Badge>
+                </div>
+
+                <div className="space-y-1.5">
+                  <div className="h-2 rounded-full bg-muted overflow-hidden">
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${progress}%`,
+                        background:
+                          'linear-gradient(90deg, var(--primary), var(--accent-brand))',
+                      }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                    <span>
+                      {campaign.raised_amount} / {campaign.funding_goal} credits
+                    </span>
+                    <span>
+                      Deadline:{' '}
+                      {new Date(campaign.deadline).toLocaleDateString()}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex gap-2 pt-1">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => openEdit(campaign)}
                   >
+                    <Pencil className="w-3.5 h-3.5 mr-1.5" />
                     Update
                   </Button>
 
                   <AlertDialog>
-                    <AlertDialogTrigger className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-destructive text-white h-8 px-3 hover:bg-destructive/90 transition-colors">
+                    <AlertDialogTrigger className="inline-flex items-center gap-1.5 rounded-md text-sm font-medium bg-destructive text-white h-8 px-3 hover:bg-destructive/90 transition-colors">
+                      <Trash2 className="w-3.5 h-3.5" />
                       Delete
                     </AlertDialogTrigger>
                     <AlertDialogContent>
@@ -161,12 +201,12 @@ export default function MyCampaignsTable() {
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
-                </TableCell>
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
 
       <Dialog
         open={!!editingCampaign}

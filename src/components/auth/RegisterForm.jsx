@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
+import { Sprout } from 'lucide-react';
 
 import { registerSchema } from '@/lib/validations/auth';
 import { uploadImageToImgbb } from '@/lib/imgbb';
@@ -20,13 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -44,7 +39,7 @@ export default function RegisterForm() {
     defaultValues: { role: 'supporter' },
   });
 
-  const role = watch('role');
+  const role = 'role';
 
   const onSubmit = async values => {
     if (!imageFile) {
@@ -72,7 +67,6 @@ export default function RegisterForm() {
         return;
       }
 
-      // Fetch our custom access token (JWT) via the /api/token route
       const tokenRes = await fetch('/api/token');
       const tokenData = await tokenRes.json();
       if (tokenData?.token) {
@@ -93,15 +87,32 @@ export default function RegisterForm() {
   };
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>Create your DaanBaksho account</CardTitle>
-        <CardDescription>
-          Join as a Supporter to fund causes, or a Creator to launch your own
-          campaign.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Card className="w-full max-w-md border-none shadow-xl shadow-black/5 py-0 overflow-hidden">
+      <div
+        className="h-1.5 w-full"
+        style={{
+          background:
+            'linear-gradient(90deg, var(--primary), var(--accent-brand))',
+        }}
+      />
+      <CardContent className="p-6 sm:p-8">
+        <div className="flex flex-col items-center text-center mb-6">
+          <div
+            className="w-12 h-12 rounded-2xl flex items-center justify-center mb-3"
+            style={{
+              background:
+                'linear-gradient(135deg, var(--primary), var(--accent-brand))',
+            }}
+          >
+            <Sprout className="w-6 h-6 text-white" />
+          </div>
+          <h1 className="text-xl font-bold">Create your account</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Join as a Supporter to fund causes, or a Creator to launch your own
+            campaign.
+          </p>
+        </div>
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="name">Full Name</Label>
@@ -153,7 +164,7 @@ export default function RegisterForm() {
               value={role}
               onValueChange={value => setValue('role', value)}
             >
-              <SelectTrigger>
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select role" />
               </SelectTrigger>
               <SelectContent>
@@ -163,10 +174,22 @@ export default function RegisterForm() {
             </Select>
           </div>
 
-          <Button type="submit" className="w-full" disabled={submitting}>
+          <Button
+            type="submit"
+            className="w-full"
+            size="lg"
+            disabled={submitting}
+          >
             {submitting ? 'Creating account...' : 'Register'}
           </Button>
         </form>
+
+        <p className="text-sm text-center text-muted-foreground mt-6">
+          Already have an account?{' '}
+          <a href="/login" className="text-primary font-medium hover:underline">
+            Login
+          </a>
+        </p>
       </CardContent>
     </Card>
   );

@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { Wallet } from 'lucide-react';
 
 import { withdrawalSchema } from '@/lib/validations/withdrawal';
 import { axiosSecure } from '@/lib/axios-secure';
@@ -19,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function WithdrawalForm() {
   const { session } = useUserRole();
@@ -63,8 +64,8 @@ export default function WithdrawalForm() {
     defaultValues: { payment_system: '' },
   });
 
-  const creditToWithdraw = watch('withdrawal_credit');
-  const paymentSystem = watch('payment_system');
+  const creditToWithdraw = 'withdrawal_credit';
+  const paymentSystem = 'payment_system';
   const dollarAmount = creditToWithdraw
     ? (Number(creditToWithdraw) / 20).toFixed(2)
     : '0.00';
@@ -95,23 +96,30 @@ export default function WithdrawalForm() {
 
   return (
     <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Creator Total Earnings</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-1">
-          <p className="text-3xl font-bold">{availableCredit} credits</p>
-          <p className="text-muted-foreground">
-            ≈ ${availableAmount} available to withdraw
-          </p>
+      <Card className="border-none shadow-sm overflow-hidden py-0">
+        <CardContent
+          className="p-6 flex items-center gap-4"
+          style={{
+            background:
+              'linear-gradient(135deg, var(--primary), var(--accent-brand))',
+          }}
+        >
+          <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+            <Wallet className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <p className="text-sm text-white/80">Available to Withdraw</p>
+            <p className="text-3xl font-bold text-white">
+              {availableCredit} credits
+            </p>
+            <p className="text-sm text-white/80">≈ ${availableAmount}</p>
+          </div>
         </CardContent>
       </Card>
 
-      <Card className="max-w-md">
-        <CardHeader>
-          <CardTitle>Request Withdrawal</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <Card className="max-w-md border-none shadow-sm">
+        <CardContent className="p-6">
+          <h2 className="font-semibold mb-4">Request Withdrawal</h2>
           <form
             onSubmit={handleSubmit(values => withdrawMutation.mutate(values))}
             className="space-y-4"
@@ -142,7 +150,7 @@ export default function WithdrawalForm() {
                 value={paymentSystem}
                 onValueChange={value => setValue('payment_system', value)}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select a payment method" />
                 </SelectTrigger>
                 <SelectContent>
@@ -177,6 +185,7 @@ export default function WithdrawalForm() {
               <Button
                 type="submit"
                 className="w-full"
+                size="lg"
                 disabled={withdrawMutation.isPending}
               >
                 {withdrawMutation.isPending ? 'Submitting...' : 'Withdraw'}

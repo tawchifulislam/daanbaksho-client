@@ -1,9 +1,10 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { Users, Handshake, Coins, Receipt } from 'lucide-react';
 import { useUserRole } from '@/hooks/useUserRole';
 import { axiosSecure } from '@/lib/axios-secure';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import StatCard from '@/components/dashboard/StatCard';
 import CampaignApprovalsTable from '@/components/dashboard/admin/CampaignApprovalsTable';
 
 export default function AdminHomePage() {
@@ -25,46 +26,30 @@ export default function AdminHomePage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">
-              Total Supporters
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{stats?.totalSupporters ?? 0}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">
-              Total Creators
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{stats?.totalCreators ?? 0}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">
-              Total Available Credits
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{stats?.totalCredits ?? 0}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm text-muted-foreground">
-              Total Payments
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold">{stats?.totalPayments ?? 0}</p>
-          </CardContent>
-        </Card>
+        <StatCard
+          icon={Users}
+          label="Total Supporters"
+          value={stats?.totalSupporters ?? 0}
+          accent="primary"
+        />
+        <StatCard
+          icon={Handshake}
+          label="Total Creators"
+          value={stats?.totalCreators ?? 0}
+          accent="brand"
+        />
+        <StatCard
+          icon={Coins}
+          label="Total Available Credits"
+          value={stats?.totalCredits ?? 0}
+          accent="primary"
+        />
+        <StatCard
+          icon={Receipt}
+          label="Total Payments"
+          value={stats?.totalPayments ?? 0}
+          accent="brand"
+        />
       </div>
 
       <div>

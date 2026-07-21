@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
+import { Rocket } from 'lucide-react';
 
 import { campaignSchema } from '@/lib/validations/campaign';
 import { uploadImageToImgbb } from '@/lib/imgbb';
@@ -22,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 
 const categories = [
   'Technology',
@@ -50,7 +51,7 @@ export default function AddCampaignForm() {
     defaultValues: { category: '' },
   });
 
-  const category = watch('category');
+  const category = 'category';
 
   const onSubmit = async values => {
     if (!imageFile) {
@@ -79,12 +80,29 @@ export default function AddCampaignForm() {
   };
 
   return (
-    <Card className="max-w-2xl">
-      <CardHeader>
-        <CardTitle>Add New Campaign</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <Card className="max-w-2xl border-none shadow-sm overflow-hidden py-0">
+      <div
+        className="px-6 py-5 flex items-center gap-3"
+        style={{
+          background:
+            'linear-gradient(135deg, var(--primary), var(--accent-brand))',
+        }}
+      >
+        <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+          <Rocket className="w-5 h-5 text-white" />
+        </div>
+        <div>
+          <h2 className="text-lg font-bold text-white">
+            Launch a New Campaign
+          </h2>
+          <p className="text-sm text-white/80">
+            Tell your story and start collecting support
+          </p>
+        </div>
+      </div>
+
+      <CardContent className="p-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div className="space-y-1.5">
             <Label htmlFor="title">Campaign Title</Label>
             <Input
@@ -110,26 +128,40 @@ export default function AddCampaignForm() {
             )}
           </div>
 
-          <div className="space-y-1.5">
-            <Label>Category</Label>
-            <Select
-              value={category}
-              onValueChange={value => setValue('category', value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map(cat => (
-                  <SelectItem key={cat} value={cat}>
-                    {cat}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {errors.category && (
-              <p className="text-sm text-red-500">{errors.category.message}</p>
-            )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label>Category</Label>
+              <Select
+                value={category}
+                onValueChange={value => setValue('category', value)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map(cat => (
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.category && (
+                <p className="text-sm text-red-500">
+                  {errors.category.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="deadline">Deadline</Label>
+              <Input id="deadline" type="date" {...register('deadline')} />
+              {errors.deadline && (
+                <p className="text-sm text-red-500">
+                  {errors.deadline.message}
+                </p>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -164,14 +196,6 @@ export default function AddCampaignForm() {
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="deadline">Deadline</Label>
-            <Input id="deadline" type="date" {...register('deadline')} />
-            {errors.deadline && (
-              <p className="text-sm text-red-500">{errors.deadline.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-1.5">
             <Label htmlFor="reward_info">Reward Info</Label>
             <Textarea
               id="reward_info"
@@ -196,8 +220,13 @@ export default function AddCampaignForm() {
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={submitting}>
-            {submitting ? 'Submitting...' : 'Add Campaign'}
+          <Button
+            type="submit"
+            className="w-full"
+            size="lg"
+            disabled={submitting}
+          >
+            {submitting ? 'Submitting...' : 'Launch Campaign'}
           </Button>
         </form>
       </CardContent>

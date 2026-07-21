@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
+import { HandCoins } from 'lucide-react';
 
 import { loginSchema } from '@/lib/validations/auth';
 import { authClient } from '@/lib/auth-client';
@@ -12,13 +13,7 @@ import { authClient } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -82,14 +77,31 @@ export default function LoginForm() {
   };
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle>Welcome back to DaanBaksho</CardTitle>
-        <CardDescription>
-          Log in to continue supporting or launching campaigns.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+    <Card className="w-full max-w-md border-none shadow-xl shadow-black/5 py-0 overflow-hidden">
+      <div
+        className="h-1.5 w-full"
+        style={{
+          background:
+            'linear-gradient(90deg, var(--primary), var(--accent-brand))',
+        }}
+      />
+      <CardContent className="p-6 sm:p-8">
+        <div className="flex flex-col items-center text-center mb-6">
+          <div
+            className="w-12 h-12 rounded-2xl flex items-center justify-center mb-3"
+            style={{
+              background:
+                'linear-gradient(135deg, var(--primary), var(--accent-brand))',
+            }}
+          >
+            <HandCoins className="w-6 h-6 text-white" />
+          </div>
+          <h1 className="text-xl font-bold">Welcome back</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Log in to continue supporting or launching campaigns.
+          </p>
+        </div>
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="email">Email</Label>
@@ -117,7 +129,12 @@ export default function LoginForm() {
             )}
           </div>
 
-          <Button type="submit" className="w-full" disabled={submitting}>
+          <Button
+            type="submit"
+            className="w-full"
+            size="lg"
+            disabled={submitting}
+          >
             {submitting ? 'Logging in...' : 'Login'}
           </Button>
         </form>
@@ -137,11 +154,22 @@ export default function LoginForm() {
           type="button"
           variant="outline"
           className="w-full"
+          size="lg"
           onClick={handleGoogleSignIn}
           disabled={googleLoading}
         >
           {googleLoading ? 'Redirecting...' : 'Continue with Google'}
         </Button>
+
+        <p className="text-sm text-center text-muted-foreground mt-6">
+          Don&apos;t have an account?{' '}
+          <a
+            href="/register"
+            className="text-primary font-medium hover:underline"
+          >
+            Register
+          </a>
+        </p>
       </CardContent>
     </Card>
   );
