@@ -2,17 +2,12 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import Image from 'next/image';
+import { Trash2 } from 'lucide-react';
 
 import { axiosSecure } from '@/lib/axios-secure';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,6 +19,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+
+const statusVariant = {
+  pending: 'secondary',
+  approved: 'default',
+  rejected: 'destructive',
+  suspended: 'destructive',
+};
 
 export default function ManageCampaignsTable() {
   const queryClient = useQueryClient();
@@ -49,60 +51,63 @@ export default function ManageCampaignsTable() {
     return <p className="text-muted-foreground">Loading campaigns...</p>;
 
   return (
-    <div className="rounded-lg border overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Creator</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Raised</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {campaigns.map(campaign => (
-            <TableRow key={campaign._id}>
-              <TableCell className="font-medium">{campaign.title}</TableCell>
-              <TableCell>{campaign.creator_name}</TableCell>
-              <TableCell>
-                <Badge variant="outline" className="capitalize">
-                  {campaign.status}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                {campaign.raised_amount} / {campaign.funding_goal}
-              </TableCell>
-              <TableCell className="text-right">
-                <AlertDialog>
-                  <AlertDialogTrigger className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-destructive text-white h-8 px-3 hover:bg-destructive/90 transition-colors">
+    <div className="space-y-3">
+      {campaigns.map(campaign => (
+        <Card key={campaign._id} className="border-none shadow-sm">
+          <CardContent className="p-4 flex items-center gap-4 flex-wrap">
+            <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0">
+              <Image
+                src={campaign.image_url}
+                alt={campaign.title}
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <p className="font-medium truncate">{campaign.title}</p>
+              <p className="text-sm text-muted-foreground">
+                by {campaign.creator_name}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {campaign.raised_amount} / {campaign.funding_goal} credits
+              </p>
+            </div>
+
+            <Badge
+              variant={statusVariant[campaign.status] || 'outline'}
+              className="capitalize shrink-0"
+            >
+              {campaign.status}
+            </Badge>
+
+            <AlertDialog>
+              <AlertDialogTrigger className="inline-flex items-center justify-center rounded-md h-9 w-9 bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors shrink-0">
+                <Trash2 className="w-4 h-4" />
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Delete &quot;{campaign.title}&quot;?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete the campaign and refund all
+                    approved supporters their contributed credits.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => deleteMutation.mutate(campaign._id)}
+                  >
                     Delete
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        Delete &quot;{campaign.title}&quot;?
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This will permanently delete the campaign and refund all
-                        approved supporters their contributed credits.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => deleteMutation.mutate(campaign._id)}
-                      >
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 }
