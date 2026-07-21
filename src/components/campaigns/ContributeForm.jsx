@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { HeartHandshake } from 'lucide-react';
 import Link from 'next/link';
 
 import { contributionSchema } from '@/lib/validations/contribution';
@@ -13,7 +14,7 @@ import { useUserRole } from '@/hooks/useUserRole';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function ContributeForm({ campaign }) {
   const { session, role, credits } = useUserRole();
@@ -52,9 +53,9 @@ export default function ContributeForm({ campaign }) {
 
   if (!session?.user) {
     return (
-      <Card>
-        <CardContent className="pt-6">
-          <p className="text-sm text-muted-foreground mb-3">
+      <Card className="border-none shadow-sm sticky top-20">
+        <CardContent className="p-6 text-center space-y-3">
+          <p className="text-sm text-muted-foreground">
             Log in as a supporter to contribute to this campaign.
           </p>
           <Link href="/login">
@@ -67,8 +68,8 @@ export default function ContributeForm({ campaign }) {
 
   if (role !== 'supporter') {
     return (
-      <Card>
-        <CardContent className="pt-6">
+      <Card className="border-none shadow-sm sticky top-20">
+        <CardContent className="p-6">
           <p className="text-sm text-muted-foreground">
             Only supporter accounts can contribute to campaigns.
           </p>
@@ -78,11 +79,21 @@ export default function ContributeForm({ campaign }) {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Support this campaign</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <Card className="border-none shadow-sm overflow-hidden py-0 sticky top-20">
+      <div
+        className="px-6 py-4 flex items-center gap-3"
+        style={{
+          background:
+            'linear-gradient(135deg, var(--primary), var(--accent-brand))',
+        }}
+      >
+        <div className="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+          <HeartHandshake className="w-5 h-5 text-white" />
+        </div>
+        <h2 className="font-semibold text-white">Support this campaign</h2>
+      </div>
+
+      <CardContent className="p-6">
         <form
           onSubmit={handleSubmit(values => contributeMutation.mutate(values))}
           className="space-y-4"
@@ -111,6 +122,7 @@ export default function ContributeForm({ campaign }) {
           <Button
             type="submit"
             className="w-full"
+            size="lg"
             disabled={contributeMutation.isPending}
           >
             {contributeMutation.isPending ? 'Submitting...' : 'Contribute'}

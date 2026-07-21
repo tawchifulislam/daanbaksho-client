@@ -53,8 +53,8 @@ export default function ReportCampaignDialog({ campaign }) {
 
   return (
     <Dialog>
-      <DialogTrigger className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-destructive transition-colors">
-        <Flag className="w-4 h-4" />
+      <DialogTrigger className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-destructive transition-colors rounded-full border px-3 py-1.5">
+        <Flag className="w-3.5 h-3.5" />
         Report this campaign
       </DialogTrigger>
       <DialogContent>

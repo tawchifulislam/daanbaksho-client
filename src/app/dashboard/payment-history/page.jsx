@@ -4,14 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useUserRole } from '@/hooks/useUserRole';
 import { axiosSecure } from '@/lib/axios-secure';
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 export default function PaymentHistoryPage() {
@@ -42,63 +35,40 @@ export default function PaymentHistoryPage() {
     return (
       <div className="space-y-6">
         <h1 className="text-2xl font-bold">Payment History</h1>
-        <div className="rounded-lg border overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Credits Withdrawn</TableHead>
-                <TableHead>Amount ($)</TableHead>
-                <TableHead>Payment System</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {withdrawalsLoading ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={5}
-                    className="text-center text-muted-foreground"
-                  >
-                    Loading...
-                  </TableCell>
-                </TableRow>
-              ) : withdrawals.length === 0 ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={5}
-                    className="text-center text-muted-foreground"
-                  >
-                    No withdrawal history yet.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                withdrawals.map(w => (
-                  <TableRow key={w._id}>
-                    <TableCell>
+
+        {withdrawalsLoading ? (
+          <p className="text-muted-foreground">Loading...</p>
+        ) : withdrawals.length === 0 ? (
+          <Card className="border-none shadow-sm">
+            <CardContent className="p-10 text-center text-muted-foreground">
+              No withdrawal history yet.
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-3">
+            {withdrawals.map(w => (
+              <Card key={w._id} className="border-none shadow-sm">
+                <CardContent className="p-4 flex items-center justify-between gap-4 flex-wrap">
+                  <div>
+                    <p className="font-medium">
+                      {w.withdrawal_credit} credits → ${w.withdrawal_amount}
+                    </p>
+                    <p className="text-sm text-muted-foreground capitalize">
+                      {w.payment_system} ·{' '}
                       {new Date(w.withdraw_date).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>{w.withdrawal_credit}</TableCell>
-                    <TableCell>${w.withdrawal_amount}</TableCell>
-                    <TableCell className="capitalize">
-                      {w.payment_system}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          w.status === 'approved' ? 'default' : 'secondary'
-                        }
-                        className="capitalize"
-                      >
-                        {w.status}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+                    </p>
+                  </div>
+                  <Badge
+                    variant={w.status === 'approved' ? 'default' : 'secondary'}
+                    className="capitalize"
+                  >
+                    {w.status}
+                  </Badge>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     );
   }
@@ -106,52 +76,34 @@ export default function PaymentHistoryPage() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Payment History</h1>
-      <div className="rounded-lg border overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Credits Purchased</TableHead>
-              <TableHead>Amount Paid ($)</TableHead>
-              <TableHead>Transaction ID</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paymentsLoading ? (
-              <TableRow>
-                <TableCell
-                  colSpan={4}
-                  className="text-center text-muted-foreground"
-                >
-                  Loading...
-                </TableCell>
-              </TableRow>
-            ) : payments.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={4}
-                  className="text-center text-muted-foreground"
-                >
-                  No payment history yet.
-                </TableCell>
-              </TableRow>
-            ) : (
-              payments.map(p => (
-                <TableRow key={p._id}>
-                  <TableCell>
-                    {new Date(p.payment_date).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>{p.credits_purchased}</TableCell>
-                  <TableCell>${p.amount_paid}</TableCell>
-                  <TableCell className="text-xs text-muted-foreground">
+
+      {paymentsLoading ? (
+        <p className="text-muted-foreground">Loading...</p>
+      ) : payments.length === 0 ? (
+        <Card className="border-none shadow-sm">
+          <CardContent className="p-10 text-center text-muted-foreground">
+            No payment history yet.
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-3">
+          {payments.map(p => (
+            <Card key={p._id} className="border-none shadow-sm">
+              <CardContent className="p-4 flex items-center justify-between gap-4 flex-wrap">
+                <div>
+                  <p className="font-medium">
+                    {p.credits_purchased} credits — ${p.amount_paid}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {new Date(p.payment_date).toLocaleDateString()} ·{' '}
                     {p.transaction_id}
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

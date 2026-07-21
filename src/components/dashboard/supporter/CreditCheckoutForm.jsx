@@ -68,7 +68,12 @@ export default function CreditCheckoutForm({ pkg, onSuccess }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <PaymentElement />
-      <Button type="submit" className="w-full" disabled={!stripe || processing}>
+      <Button
+        type="submit"
+        className="w-full"
+        size="lg"
+        disabled={!stripe || processing}
+      >
         {processing ? 'Processing...' : `Pay $${pkg.price}`}
       </Button>
     </form>

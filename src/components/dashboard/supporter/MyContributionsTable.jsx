@@ -6,14 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { axiosSecure } from '@/lib/axios-secure';
 import { useUserRole } from '@/hooks/useUserRole';
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
   Pagination,
@@ -56,51 +49,42 @@ export default function MyContributionsTable() {
       <p className="text-muted-foreground">Loading your contributions...</p>
     );
 
+  if (contributions.length === 0) {
+    return (
+      <Card className="border-none shadow-sm">
+        <CardContent className="p-10 text-center text-muted-foreground">
+          You haven&apos;t contributed to any campaign yet.
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Campaign</TableHead>
-              <TableHead>Creator</TableHead>
-              <TableHead>Amount</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {contributions.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={5}
-                  className="text-center text-muted-foreground"
+      <div className="space-y-3">
+        {contributions.map(c => (
+          <Card key={c._id} className="border-none shadow-sm">
+            <CardContent className="p-4 flex items-center justify-between gap-4 flex-wrap">
+              <div className="min-w-0">
+                <p className="font-medium truncate">{c.campaign_title}</p>
+                <p className="text-sm text-muted-foreground">
+                  by {c.creator_name} · {new Date(c.date).toLocaleDateString()}
+                </p>
+              </div>
+              <div className="flex items-center gap-3 shrink-0">
+                <span className="font-semibold text-primary">
+                  {c.contribution_amount} credits
+                </span>
+                <Badge
+                  variant={statusVariant[c.status] || 'outline'}
+                  className="capitalize"
                 >
-                  You haven&apos;t contributed to any campaign yet.
-                </TableCell>
-              </TableRow>
-            ) : (
-              contributions.map(c => (
-                <TableRow key={c._id}>
-                  <TableCell className="font-medium">
-                    {c.campaign_title}
-                  </TableCell>
-                  <TableCell>{c.creator_name}</TableCell>
-                  <TableCell>{c.contribution_amount}</TableCell>
-                  <TableCell>{new Date(c.date).toLocaleDateString()}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={statusVariant[c.status] || 'outline'}
-                      className="capitalize"
-                    >
-                      {c.status}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+                  {c.status}
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {totalPages > 1 && (
