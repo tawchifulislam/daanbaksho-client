@@ -2,17 +2,13 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import Image from 'next/image';
+import { Check, X } from 'lucide-react';
 
 import { axiosSecure } from '@/lib/axios-secure';
 import { Button } from '@/components/ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function CampaignApprovalsTable() {
   const queryClient = useQueryClient();
@@ -40,65 +36,76 @@ export default function CampaignApprovalsTable() {
       <p className="text-muted-foreground">Loading pending campaigns...</p>
     );
 
+  if (campaigns.length === 0) {
+    return (
+      <Card className="border-none shadow-sm">
+        <CardContent className="p-10 text-center text-muted-foreground">
+          No campaigns pending approval.
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <div className="rounded-lg border overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Creator</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Funding Goal</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {campaigns.length === 0 ? (
-            <TableRow>
-              <TableCell
-                colSpan={5}
-                className="text-center text-muted-foreground"
+    <div className="space-y-3">
+      {campaigns.map(campaign => (
+        <Card key={campaign._id} className="border-none shadow-sm">
+          <CardContent className="p-4 flex items-center gap-4 flex-wrap">
+            <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0">
+              <Image
+                src={campaign.image_url}
+                alt={campaign.title}
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <p className="font-medium truncate">{campaign.title}</p>
+              <p className="text-sm text-muted-foreground">
+                by {campaign.creator_name} ·{' '}
+                <Badge variant="outline" className="ml-1">
+                  {campaign.category}
+                </Badge>
+              </p>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                Goal:{' '}
+                <span className="font-medium text-primary">
+                  {campaign.funding_goal} credits
+                </span>
+              </p>
+            </div>
+
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                onClick={() =>
+                  statusMutation.mutate({
+                    id: campaign._id,
+                    status: 'approved',
+                  })
+                }
               >
-                No campaigns pending approval.
-              </TableCell>
-            </TableRow>
-          ) : (
-            campaigns.map(campaign => (
-              <TableRow key={campaign._id}>
-                <TableCell className="font-medium">{campaign.title}</TableCell>
-                <TableCell>{campaign.creator_name}</TableCell>
-                <TableCell>{campaign.category}</TableCell>
-                <TableCell>{campaign.funding_goal}</TableCell>
-                <TableCell className="text-right space-x-2">
-                  <Button
-                    size="sm"
-                    onClick={() =>
-                      statusMutation.mutate({
-                        id: campaign._id,
-                        status: 'approved',
-                      })
-                    }
-                  >
-                    Approve
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() =>
-                      statusMutation.mutate({
-                        id: campaign._id,
-                        status: 'rejected',
-                      })
-                    }
-                  >
-                    Reject
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
+                <Check className="w-3.5 h-3.5 mr-1" />
+                Approve
+              </Button>
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={() =>
+                  statusMutation.mutate({
+                    id: campaign._id,
+                    status: 'rejected',
+                  })
+                }
+              >
+                <X className="w-3.5 h-3.5 mr-1" />
+                Reject
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 }
