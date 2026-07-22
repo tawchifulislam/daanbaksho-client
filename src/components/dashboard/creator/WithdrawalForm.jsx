@@ -95,7 +95,7 @@ export default function WithdrawalForm() {
   const canWithdraw = availableCredit >= 200;
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-2xl mx-auto space-y-6">
       <Card className="border-none shadow-sm overflow-hidden py-0">
         <CardContent
           className="p-6 flex items-center gap-4"
@@ -117,7 +117,7 @@ export default function WithdrawalForm() {
         </CardContent>
       </Card>
 
-      <Card className="max-w-md border-none shadow-sm">
+      <Card className="border-none shadow-sm">
         <CardContent className="p-6">
           <h2 className="font-semibold mb-4">Request Withdrawal</h2>
           <form

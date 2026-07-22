@@ -29,15 +29,11 @@ export default function DashboardLayout({ children }) {
   }
 
   return (
-    <div className="flex">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 flex gap-6">
       <DashboardSidebar />
       <div className="flex-1 min-w-0 flex flex-col">
         <DashboardTopbar />
-        <main className="flex-1 bg-muted/20 overflow-x-hidden">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            {children}
-          </div>
-        </main>
+        <main className="flex-1 overflow-x-hidden pb-10">{children}</main>
       </div>
     </div>
   );
