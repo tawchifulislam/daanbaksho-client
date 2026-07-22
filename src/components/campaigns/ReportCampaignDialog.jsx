@@ -43,7 +43,7 @@ export default function ReportCampaignDialog({ campaign }) {
       });
     },
     onSuccess: () => {
-      toast.success('Report submitted — our team will review it');
+      toast.success('Report submitted - our team will review it');
       reset();
     },
     onError: () => toast.error('Failed to submit report'),

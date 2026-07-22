@@ -40,7 +40,7 @@ export default function ContributeForm({ campaign }) {
       });
     },
     onSuccess: () => {
-      toast.success('Contribution submitted — awaiting creator approval');
+      toast.success('Contribution submitted - awaiting creator approval');
       reset();
       queryClient.invalidateQueries({
         queryKey: ['user-info', session.user.email],

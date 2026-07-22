@@ -92,7 +92,7 @@ export default function PaymentHistoryPage() {
               <CardContent className="p-4 flex items-center justify-between gap-4 flex-wrap">
                 <div>
                   <p className="font-medium">
-                    {p.credits_purchased} credits — ${p.amount_paid}
+                    {p.credits_purchased} credits - ${p.amount_paid}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     {new Date(p.payment_date).toLocaleDateString()} ·{' '}

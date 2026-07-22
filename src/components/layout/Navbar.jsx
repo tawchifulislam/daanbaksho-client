@@ -167,7 +167,7 @@ export default function Navbar() {
           <Logo />
         </div>
 
-        {/* Center: nav links — desktop only */}
+        {/* Center: nav links - desktop only */}
         <div className="hidden lg:flex items-center justify-center gap-6">
           <CenterNavLinks pathname={pathname} showDashboard={isLoggedIn} />
         </div>

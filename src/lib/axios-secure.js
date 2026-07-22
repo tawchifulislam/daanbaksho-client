@@ -25,7 +25,7 @@ axiosSecure.interceptors.response.use(
         typeof window !== 'undefined' &&
         ['/login', '/register'].includes(window.location.pathname);
 
-      // Only redirect if we're not already on an auth page —
+      // Only redirect if we're not already on an auth page -
       // this is what breaks the infinite reload loop.
       if (!isAuthPage) {
         window.location.href = '/login';

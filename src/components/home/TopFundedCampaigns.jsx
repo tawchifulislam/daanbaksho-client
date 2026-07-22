@@ -30,7 +30,7 @@ export default function TopFundedCampaigns() {
 
         {campaigns.length === 0 ? (
           <p className="text-center text-muted-foreground">
-            No campaigns funded yet — be the first to launch one!
+            No campaigns funded yet - be the first to launch one!
           </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">

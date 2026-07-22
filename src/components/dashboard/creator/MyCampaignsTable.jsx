@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Pencil, Trash2 } from 'lucide-react';
 
 import { axiosSecure } from '@/lib/axios-secure';
+import { uploadImageToImgbb } from '@/lib/imgbb';
 import { useUserRole } from '@/hooks/useUserRole';
 
 import { Button } from '@/components/ui/button';
@@ -51,7 +52,10 @@ export default function MyCampaignsTable() {
     title: '',
     story: '',
     reward_info: '',
+    deadline: '',
   });
+  const [editImageFile, setEditImageFile] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   const { data: campaigns = [], isLoading } = useQuery({
     queryKey: ['my-campaigns', email],
@@ -69,6 +73,7 @@ export default function MyCampaignsTable() {
       toast.success('Campaign updated');
       queryClient.invalidateQueries({ queryKey: ['my-campaigns', email] });
       setEditingCampaign(null);
+      setEditImageFile(null);
     },
     onError: () => toast.error('Failed to update campaign'),
   });
@@ -84,11 +89,32 @@ export default function MyCampaignsTable() {
 
   const openEdit = campaign => {
     setEditingCampaign(campaign);
+    setEditImageFile(null);
     setEditValues({
       title: campaign.title,
       story: campaign.story,
       reward_info: campaign.reward_info,
+      deadline: campaign.deadline?.slice(0, 10) || '',
     });
+  };
+
+  const handleSaveEdit = async () => {
+    setSaving(true);
+    try {
+      let image_url;
+      if (editImageFile) {
+        image_url = await uploadImageToImgbb(editImageFile);
+      }
+
+      updateMutation.mutate({
+        id: editingCampaign._id,
+        values: { ...editValues, ...(image_url && { image_url }) },
+      });
+    } catch (err) {
+      toast.error('Failed to upload new image');
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (isLoading)
@@ -186,9 +212,9 @@ export default function MyCampaignsTable() {
                           Delete this campaign?
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                          This will permanently delete &quot;{campaign.title}
-                          &quot; and refund all approved supporters their
-                          contributed credits. This action cannot be undone.
+                          This will permanently delete &quot;{campaign.title}&quot; and
+                          refund all approved supporters their contributed
+                          credits. This action cannot be undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -210,9 +236,14 @@ export default function MyCampaignsTable() {
 
       <Dialog
         open={!!editingCampaign}
-        onOpenChange={open => !open && setEditingCampaign(null)}
+        onOpenChange={open => {
+          if (!open) {
+            setEditingCampaign(null);
+            setEditImageFile(null);
+          }
+        }}
       >
-        <DialogContent>
+        <DialogContent className="max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Update Campaign</DialogTitle>
           </DialogHeader>
@@ -228,6 +259,7 @@ export default function MyCampaignsTable() {
                 }
               />
             </div>
+
             <div className="space-y-1.5">
               <Label htmlFor="edit-story">Story</Label>
               <Textarea
@@ -239,6 +271,19 @@ export default function MyCampaignsTable() {
                 }
               />
             </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-deadline">Deadline</Label>
+              <Input
+                id="edit-deadline"
+                type="date"
+                value={editValues.deadline}
+                onChange={e =>
+                  setEditValues(v => ({ ...v, deadline: e.target.value }))
+                }
+              />
+            </div>
+
             <div className="space-y-1.5">
               <Label htmlFor="edit-reward">Reward Info</Label>
               <Textarea
@@ -250,19 +295,38 @@ export default function MyCampaignsTable() {
                 }
               />
             </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-image">
+                Cover Image (optional - leave empty to keep current)
+              </Label>
+              {editingCampaign && (
+                <div className="relative w-full h-32 rounded-lg overflow-hidden mb-2">
+                  <Image
+                    src={editingCampaign.image_url}
+                    alt={editingCampaign.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              )}
+              <Input
+                id="edit-image"
+                type="file"
+                accept="image/*"
+                onChange={e => setEditImageFile(e.target.files?.[0] || null)}
+              />
+            </div>
           </div>
 
           <DialogFooter>
             <Button
-              onClick={() =>
-                updateMutation.mutate({
-                  id: editingCampaign._id,
-                  values: editValues,
-                })
-              }
-              disabled={updateMutation.isPending}
+              onClick={handleSaveEdit}
+              disabled={saving || updateMutation.isPending}
             >
-              {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
+              {saving || updateMutation.isPending
+                ? 'Saving...'
+                : 'Save Changes'}
             </Button>
           </DialogFooter>
         </DialogContent>

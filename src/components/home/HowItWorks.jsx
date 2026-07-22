@@ -13,7 +13,7 @@ const steps = [
   {
     icon: HandCoins,
     title: 'Contribute Credits',
-    desc: 'Support campaigns with credits — purchase more anytime as you find causes worth backing.',
+    desc: 'Support campaigns with credits - purchase more anytime as you find causes worth backing.',
   },
   {
     icon: TrendingUp,
