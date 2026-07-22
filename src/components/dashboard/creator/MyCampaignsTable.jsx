@@ -34,6 +34,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import Loading from '@/components/ui/Loading';
+import ImageInput from '@/components/shared/ImageInput';
 
 const statusVariant = {
   pending: 'secondary',
@@ -54,7 +56,7 @@ export default function MyCampaignsTable() {
     reward_info: '',
     deadline: '',
   });
-  const [editImageFile, setEditImageFile] = useState(null);
+  const [editImage, setEditImage] = useState(null);
   const [saving, setSaving] = useState(false);
 
   const { data: campaigns = [], isLoading } = useQuery({
@@ -73,7 +75,7 @@ export default function MyCampaignsTable() {
       toast.success('Campaign updated');
       queryClient.invalidateQueries({ queryKey: ['my-campaigns', email] });
       setEditingCampaign(null);
-      setEditImageFile(null);
+      setEditImage(null);
     },
     onError: () => toast.error('Failed to update campaign'),
   });
@@ -89,7 +91,7 @@ export default function MyCampaignsTable() {
 
   const openEdit = campaign => {
     setEditingCampaign(campaign);
-    setEditImageFile(null);
+    setEditImage(null);
     setEditValues({
       title: campaign.title,
       story: campaign.story,
@@ -102,8 +104,10 @@ export default function MyCampaignsTable() {
     setSaving(true);
     try {
       let image_url;
-      if (editImageFile) {
-        image_url = await uploadImageToImgbb(editImageFile);
+      if (editImage instanceof File) {
+        image_url = await uploadImageToImgbb(editImage);
+      } else if (typeof editImage === 'string' && editImage) {
+        image_url = editImage;
       }
 
       updateMutation.mutate({
@@ -111,14 +115,14 @@ export default function MyCampaignsTable() {
         values: { ...editValues, ...(image_url && { image_url }) },
       });
     } catch (err) {
-      toast.error('Failed to upload new image');
+      toast.error('Failed to process image');
     } finally {
       setSaving(false);
     }
   };
 
   if (isLoading)
-    return <p className="text-muted-foreground">Loading your campaigns...</p>;
+    return <Loading />;
 
   if (campaigns.length === 0) {
     return (
@@ -212,9 +216,9 @@ export default function MyCampaignsTable() {
                           Delete this campaign?
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                          This will permanently delete &quot;{campaign.title}&quot; and
-                          refund all approved supporters their contributed
-                          credits. This action cannot be undone.
+                          This will permanently delete &quot;{campaign.title}
+                          &quot; and refund all approved supporters their
+                          contributed credits. This action cannot be undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -297,24 +301,11 @@ export default function MyCampaignsTable() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="edit-image">
-                Cover Image (optional - leave empty to keep current)
-              </Label>
-              {editingCampaign && (
-                <div className="relative w-full h-32 rounded-lg overflow-hidden mb-2">
-                  <Image
-                    src={editingCampaign.image_url}
-                    alt={editingCampaign.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              )}
-              <Input
-                id="edit-image"
-                type="file"
-                accept="image/*"
-                onChange={e => setEditImageFile(e.target.files?.[0] || null)}
+              <ImageInput
+                value={editImage}
+                onChange={setEditImage}
+                previewUrl={editingCampaign?.image_url}
+                label="Cover Image (leave unchanged to keep current)"
               />
             </div>
           </div>

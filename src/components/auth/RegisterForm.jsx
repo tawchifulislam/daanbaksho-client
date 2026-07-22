@@ -39,7 +39,8 @@ export default function RegisterForm() {
     defaultValues: { role: 'supporter' },
   });
 
-  const role = 'role';
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const role = watch('role');
 
   const onSubmit = async values => {
     if (!imageFile) {

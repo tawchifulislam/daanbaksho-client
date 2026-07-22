@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Link2, Upload } from 'lucide-react';
 
@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
-// value: File object (upload mode) or a string URL (url mode) or null
 export default function ImageInput({
   value,
   onChange,
@@ -16,20 +15,35 @@ export default function ImageInput({
   label = 'Cover Image',
 }) {
   const [urlInput, setUrlInput] = useState('');
+  const [preview, setPreview] = useState(previewUrl || null);
 
-  const preview =
-    value instanceof File
-      ? URL.createObjectURL(value)
-      : typeof value === 'string' && value
-        ? value
-        : previewUrl;
+  useEffect(() => {
+    if (value instanceof File) {
+      const objectUrl = URL.createObjectURL(value);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPreview(objectUrl);
+
+      return () => URL.revokeObjectURL(objectUrl);
+    } else if (typeof value === 'string' && value) {
+      setPreview(value);
+      setUrlInput(value);
+    } else {
+      setPreview(previewUrl || null);
+    }
+  }, [value, previewUrl]);
+
+  const handleUrlChange = e => {
+    const val = e.target.value;
+    setUrlInput(val);
+    onChange(val.trim());
+  };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3 w-full">
       <Label>{label}</Label>
 
       {preview && (
-        <div className="relative w-full h-36 rounded-lg overflow-hidden border">
+        <div className="relative w-full h-40 rounded-lg overflow-hidden border bg-slate-50">
           <Image
             src={preview}
             alt="Preview"
@@ -40,33 +54,40 @@ export default function ImageInput({
         </div>
       )}
 
-      <Tabs defaultValue="upload" className="w-full">
+      <Tabs defaultValue="upload" className="w-full flex flex-col">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="upload">
-            <Upload className="w-3.5 h-3.5 mr-1.5" />
+          <TabsTrigger
+            value="upload"
+            className="flex items-center justify-center gap-1.5"
+          >
+            <Upload className="w-4 h-4" />
             Upload
           </TabsTrigger>
-          <TabsTrigger value="url">
-            <Link2 className="w-3.5 h-3.5 mr-1.5" />
+          <TabsTrigger
+            value="url"
+            className="flex items-center justify-center gap-1.5"
+          >
+            <Link2 className="w-4 h-4" />
             Image URL
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="upload" className="pt-2">
+        <TabsContent value="upload" className="mt-2 w-full shrink-0">
           <Input
             type="file"
             accept="image/*"
             onChange={e => onChange(e.target.files?.[0] || null)}
+            className="w-full cursor-pointer"
           />
         </TabsContent>
 
-        <TabsContent value="url" className="pt-2 flex gap-2">
+        <TabsContent value="url" className="mt-2 w-full shrink-0">
           <Input
             type="url"
             placeholder="https://images.pexels.com/..."
             value={urlInput}
-            onChange={e => setUrlInput(e.target.value)}
-            onBlur={() => urlInput && onChange(urlInput.trim())}
+            onChange={handleUrlChange}
+            className="w-full"
           />
         </TabsContent>
       </Tabs>

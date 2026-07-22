@@ -64,8 +64,9 @@ export default function WithdrawalForm() {
     defaultValues: { payment_system: '' },
   });
 
-  const creditToWithdraw = 'withdrawal_credit';
-  const paymentSystem = 'payment_system';
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const creditToWithdraw = watch('withdrawal_credit');
+  const paymentSystem = watch('payment_system');
   const dollarAmount = creditToWithdraw
     ? (Number(creditToWithdraw) / 20).toFixed(2)
     : '0.00';
