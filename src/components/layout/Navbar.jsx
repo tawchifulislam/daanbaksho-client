@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { toast } from 'sonner';
-import { Menu, Coins, LogOut, Bell } from 'lucide-react';
+import { Menu, Coins, LogOut, Bell, CodeXml } from 'lucide-react';
 import { LogoGithub } from '@gravity-ui/icons';
 
 import { authClient } from '@/lib/auth-client';
@@ -105,8 +105,8 @@ function DeveloperLink() {
       rel="noopener noreferrer"
       className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
     >
-      <LogoGithub className="w-4 h-4" />
-      Join as Developer
+      <CodeXml className="w-4 h-4" />
+      Join Us
     </a>
   );
 }
@@ -123,7 +123,7 @@ function CenterNavLinks({ pathname, showDashboard }) {
           isExploreActive ? 'text-primary' : 'hover:text-primary'
         }`}
       >
-        Explore Campaigns
+        Campaigns
       </Link>
 
       {showDashboard && (
@@ -237,7 +237,7 @@ export default function Navbar() {
                   onClick={() => setOpen(false)}
                   className={`text-sm font-medium ${pathname === '/campaigns' ? 'text-primary' : ''}`}
                 >
-                  Explore Campaigns
+                  Campaigns
                 </Link>
 
                 {isLoggedIn && (

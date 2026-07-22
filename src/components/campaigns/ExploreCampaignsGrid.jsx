@@ -20,6 +20,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import Loading from '../ui/Loading';
 
 const categories = [
   'Technology',
@@ -79,7 +80,7 @@ export default function ExploreCampaignsGrid() {
       </div>
 
       {isLoading ? (
-        <p className="text-muted-foreground">Loading campaigns...</p>
+        <Loading />
       ) : campaigns.length === 0 ? (
         <p className="text-muted-foreground">
           No campaigns found for this category yet.
