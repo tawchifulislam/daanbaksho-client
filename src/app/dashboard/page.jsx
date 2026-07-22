@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUserRole } from '@/hooks/useUserRole';
+import Loading from '@/components/ui/Loading';
 
 export default function DashboardIndexPage() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function DashboardIndexPage() {
 
   return (
     <div className="flex items-center justify-center h-full py-20">
-      <p className="text-muted-foreground">Redirecting to your dashboard...</p>
+      <Loading label="Redirecting to dashboard" />
     </div>
   );
 }

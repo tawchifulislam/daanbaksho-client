@@ -10,6 +10,7 @@ import ContributeForm from '@/components/campaigns/ContributeForm';
 import ReportCampaignDialog from '@/components/campaigns/ReportCampaignDialog';
 import { Badge } from '@/components/ui/badge';
 import Container from '@/components/layout/Container';
+import Loading from '@/components/ui/Loading';
 
 export default function CampaignDetailsPage() {
   const { id } = useParams();
@@ -27,7 +28,7 @@ export default function CampaignDetailsPage() {
   if (isLoading) {
     return (
       <Container className="py-10">
-        <p className="text-muted-foreground">Loading campaign...</p>
+        <Loading label="Loading campaigns..." />
       </Container>
     );
   }

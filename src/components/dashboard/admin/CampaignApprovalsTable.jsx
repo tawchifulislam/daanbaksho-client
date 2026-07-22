@@ -9,6 +9,7 @@ import { axiosSecure } from '@/lib/axios-secure';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
+import Loading from '@/components/ui/Loading';
 
 export default function CampaignApprovalsTable() {
   const queryClient = useQueryClient();
@@ -33,7 +34,7 @@ export default function CampaignApprovalsTable() {
 
   if (isLoading)
     return (
-      <p className="text-muted-foreground">Loading pending campaigns...</p>
+      <Loading label="Loading pending campaigns..." />
     );
 
   if (campaigns.length === 0) {

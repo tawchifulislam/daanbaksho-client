@@ -6,6 +6,10 @@ import { axiosSecure } from '@/lib/axios-secure';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import Loading from '@/components/ui/Loading';
+import { CircleChevronRight } from 'lucide-react';
+import { ChevronsRight } from '@gravity-ui/icons';
+
 
 export default function PaymentHistoryPage() {
   const { session, role } = useUserRole();
@@ -37,7 +41,7 @@ export default function PaymentHistoryPage() {
         <h1 className="text-2xl font-bold">Payment History</h1>
 
         {withdrawalsLoading ? (
-          <p className="text-muted-foreground">Loading...</p>
+          <Loading label="Loading..." />
         ) : withdrawals.length === 0 ? (
           <Card className="border-none shadow-sm">
             <CardContent className="p-10 text-center text-muted-foreground">
@@ -51,7 +55,8 @@ export default function PaymentHistoryPage() {
                 <CardContent className="p-4 flex items-center justify-between gap-4 flex-wrap">
                   <div>
                     <p className="font-medium">
-                      {w.withdrawal_credit} credits → ${w.withdrawal_amount}
+                      {w.withdrawal_credit} credits <ChevronsRight size={10} /> $
+                      {w.withdrawal_amount}
                     </p>
                     <p className="text-sm text-muted-foreground capitalize">
                       {w.payment_system} ·{' '}
@@ -78,7 +83,7 @@ export default function PaymentHistoryPage() {
       <h1 className="text-2xl font-bold">Payment History</h1>
 
       {paymentsLoading ? (
-        <p className="text-muted-foreground">Loading...</p>
+        <Loading label="Loading payment history..." />
       ) : payments.length === 0 ? (
         <Card className="border-none shadow-sm">
           <CardContent className="p-10 text-center text-muted-foreground">

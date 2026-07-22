@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useUserRole } from '@/hooks/useUserRole';
 import DashboardSidebar from '@/components/layout/DashboardSidebar';
 import DashboardTopbar from '@/components/layout/DashboardTopbar';
+import Loading from '@/components/ui/Loading';
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function DashboardLayout({ children }) {
   if (isLoading) {
     return (
       <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
-        <p className="text-muted-foreground">Loading dashboard...</p>
+        <Loading label="Loading dashboard..." />
       </div>
     );
   }
