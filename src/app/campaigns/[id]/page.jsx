@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import axios from 'axios';
+import { Calendar, Coins, User } from 'lucide-react';
 
 import ContributeForm from '@/components/campaigns/ContributeForm';
 import ReportCampaignDialog from '@/components/campaigns/ReportCampaignDialog';
@@ -43,55 +44,90 @@ export default function CampaignDetailsPage() {
     100,
     Math.round((campaign.raised_amount / campaign.funding_goal) * 100),
   );
+  const daysLeft = Math.max(
+    0,
+    Math.ceil(
+      (new Date(campaign.deadline) - new Date()) / (1000 * 60 * 60 * 24),
+    ),
+  );
 
   return (
-    <Container className="py-10">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-4">
-          <div className="relative h-72 w-full rounded-xl overflow-hidden">
+    <Container className="py-8 sm:py-10">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-10">
+        <div className="lg:col-span-3">
+          <div className="relative h-64 sm:h-80 w-full rounded-2xl overflow-hidden">
             <Image
               src={campaign.image_url}
               alt={campaign.title}
               fill
               className="object-cover"
+              priority
             />
           </div>
+        </div>
 
-          <Badge>{campaign.category}</Badge>
-          <h1 className="text-3xl font-bold">{campaign.title}</h1>
-          <p className="text-muted-foreground">by {campaign.creator_name}</p>
+        <div className="lg:col-span-2 flex flex-col justify-center">
+          <Badge className="w-fit mb-3">{campaign.category}</Badge>
+          <h1 className="text-2xl sm:text-3xl font-bold leading-tight">
+            {campaign.title}
+          </h1>
+          <p className="text-muted-foreground mt-2 inline-flex items-center gap-1.5 text-sm">
+            <User className="w-4 h-4" />
+            by {campaign.creator_name}
+          </p>
 
-          <div className="space-y-1">
-            <div className="h-2 rounded-full bg-muted overflow-hidden">
+          <div className="mt-6 space-y-3">
+            <div className="flex items-center justify-between text-sm">
+              <span className="font-semibold text-primary">
+                {progress}% funded
+              </span>
+              <span className="text-muted-foreground">
+                {campaign.raised_amount} / {campaign.funding_goal} credits
+              </span>
+            </div>
+            <div className="h-2.5 rounded-full bg-muted overflow-hidden">
               <div
-                className="h-full bg-primary"
-                style={{ width: `${progress}%` }}
+                className="h-full rounded-full"
+                style={{
+                  width: `${progress}%`,
+                  background:
+                    'linear-gradient(90deg, var(--primary), var(--accent-brand))',
+                }}
               />
             </div>
-            <p className="text-sm text-muted-foreground">
-              {campaign.raised_amount} / {campaign.funding_goal} credits raised
-            </p>
+            <div className="flex items-center gap-4 text-sm text-muted-foreground pt-1">
+              <span className="inline-flex items-center gap-1.5">
+                <Calendar className="w-4 h-4" />
+                {daysLeft} days left
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Coins className="w-4 h-4" />
+                Min. {campaign.minimum_contribution}
+              </span>
+            </div>
           </div>
+        </div>
+      </div>
 
-          <div className="prose max-w-none">
-            <h2 className="text-xl font-semibold mt-6 mb-2">Campaign Story</h2>
-            <p className="whitespace-pre-line text-muted-foreground">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div className="lg:col-span-2 space-y-8">
+          <div>
+            <h2 className="text-xl font-semibold mb-3">Campaign Story</h2>
+            <p className="whitespace-pre-line text-muted-foreground leading-relaxed">
               {campaign.story}
             </p>
+          </div>
 
-            <h2 className="text-xl font-semibold mt-6 mb-2">
+          <div>
+            <h2 className="text-xl font-semibold mb-3">
               What Supporters Receive
             </h2>
-            <p className="text-muted-foreground">{campaign.reward_info}</p>
-
-            <p className="text-sm text-muted-foreground mt-4">
-              Deadline: {new Date(campaign.deadline).toLocaleDateString()}
+            <p className="text-muted-foreground leading-relaxed">
+              {campaign.reward_info}
             </p>
           </div>
 
-          <div className="mt-6">
-            <ReportCampaignDialog campaign={campaign} />
-          </div>
+          <ReportCampaignDialog campaign={campaign} />
         </div>
 
         <div>

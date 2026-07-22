@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import axios from 'axios';
+import { Coins } from 'lucide-react';
 import Container from '@/components/layout/Container';
 
 export default function TopFundedCampaigns() {
@@ -32,7 +33,7 @@ export default function TopFundedCampaigns() {
             No campaigns funded yet — be the first to launch one!
           </p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {campaigns.map((campaign, i) => (
               <motion.div
                 key={campaign._id}
@@ -40,20 +41,25 @@ export default function TopFundedCampaigns() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.05 }}
-                className="rounded-xl border overflow-hidden hover:shadow-lg transition-shadow"
               >
-                <Link href={`/campaigns/${campaign._id}`}>
-                  <div className="relative h-44 w-full">
+                <Link
+                  href={`/campaigns/${campaign._id}`}
+                  className="group flex items-center gap-4 rounded-xl border bg-card p-2.5 pr-4 hover:shadow-md hover:border-primary/30 transition-all"
+                >
+                  <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0">
                     <Image
                       src={campaign.image_url}
                       alt={campaign.title}
                       fill
-                      className="object-cover"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold truncate">{campaign.title}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
+                      {campaign.title}
+                    </h3>
+                    <p className="text-xs text-muted-foreground mt-1 inline-flex items-center gap-1">
+                      <Coins className="w-3 h-3 text-primary" />
                       {campaign.raised_amount} credits raised
                     </p>
                   </div>

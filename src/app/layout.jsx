@@ -2,6 +2,7 @@ import './globals.css';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import Providers from '@/components/Providers';
 import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -20,8 +21,11 @@ export default function RootLayout({ children }) {
     <html lang="en" className={jakarta.variable}>
       <body className="font-sans antialiased" suppressHydrationWarning>
         <Providers>
-          <Navbar />
-          {children}
+          <div className="min-h-screen flex flex-col">
+            <Navbar />
+            <div className="flex-1">{children}</div>
+            <Footer />
+          </div>
         </Providers>
       </body>
     </html>
