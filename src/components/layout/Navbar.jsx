@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { toast } from 'sonner';
-import { Menu, Coins, LogOut } from 'lucide-react';
+import { Menu, Coins, LogOut, Bell } from 'lucide-react';
 import { LogoGithub } from '@gravity-ui/icons';
 
 import { authClient } from '@/lib/auth-client';
@@ -29,6 +29,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Logo from './Logo';
 import Container from './Container';
+import NotificationPopup from './NotificationPopup';
 
 const GITHUB_CLIENT_REPO =
   'https://github.com/tawchifulislam/daanbaksho-client';
@@ -39,6 +40,27 @@ function CreditsBadge({ credits }) {
       <Coins className="w-3.5 h-3.5" />
       {credits}
     </span>
+  );
+}
+
+function NotificationBell({ email }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen(prev => !prev)}
+        className="relative p-2 rounded-full hover:bg-muted transition-colors"
+        aria-label="Notifications"
+      >
+        <Bell className="w-5 h-5" />
+      </button>
+      <NotificationPopup
+        email={email}
+        open={open}
+        onClose={() => setOpen(false)}
+      />
+    </div>
   );
 }
 
@@ -127,6 +149,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   const isLoggedIn = !isLoading && !!session?.user;
+  const email = session?.user?.email;
 
   const handleLogout = async () => {
     await authClient.signOut();
@@ -149,12 +172,13 @@ export default function Navbar() {
           <CenterNavLinks pathname={pathname} showDashboard={isLoggedIn} />
         </div>
 
-        {/* Right: credits + auth/profile (desktop) or hamburger (mobile/tablet) */}
-        <div className="flex items-center justify-end gap-3">
+        {/* Right: credits + notifications + auth/profile (desktop) or hamburger (mobile/tablet) */}
+        <div className="flex items-center justify-end gap-2">
           {isLoggedIn ? (
             <>
-              <div className="hidden lg:flex items-center gap-3">
+              <div className="hidden lg:flex items-center gap-2">
                 <CreditsBadge credits={credits} />
+                <NotificationBell email={email} />
                 <UserMenu session={session} onLogout={handleLogout} />
               </div>
             </>
@@ -171,7 +195,7 @@ export default function Navbar() {
             </div>
           )}
 
-          {/* Mobile / tablet trigger — only element shown below lg */}
+          {/* Mobile / tablet trigger */}
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger className="lg:hidden inline-flex items-center justify-center rounded-md h-9 w-9 hover:bg-muted transition-colors">
               <Menu className="w-5 h-5" />
